@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-  
+  float a=0;
   float M[2][2] = {
 	{5, 2},
 	{2, 1},
@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
   
 	if(world_rank == 0){
 		printf("Jestem procesorem: %d\n", world_rank);
-		float a=M[0][1]/2;
+		a=M[0][1]/2;
 		MPI_Send(&a, 1, MPI_FLOAT, 1, 0, MPI_COMM_WORLD);     
 	}
 	else if (world_rank==1){
