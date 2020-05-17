@@ -1,8 +1,6 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <cmath>
-#include <math.h>
 using namespace std;
 int main(int argc, char** argv) {
   // Initialize the MPI environment
