@@ -25,7 +25,9 @@ int main(int argc, char** argv) {
 			}
 			printf("\n");
 		}
+		printf("\n");
 		a=sqrt(M[0][1]);
+		printf("A wynosi %e", a);
 		MPI_Send(&a, 1, MPI_FLOAT, 1, 0, MPI_COMM_WORLD);     
 	}
 	else if (world_rank==1){
@@ -34,7 +36,7 @@ int main(int argc, char** argv) {
 		M[0][1]=a;
 		for (int i = 0; i <n; i++){
 			for (int j = 0; j <n; j++){
-				printf("%f ,", M[i][j]);
+				printf("%F ,", M[i][j]);
 			}
 			printf("\n");
 		}	
