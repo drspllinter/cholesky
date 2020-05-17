@@ -10,25 +10,20 @@ int main(int argc, char** argv) {
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   
-  float M[4][4] = {
-	{9, 0, -27, 18},
-	{0, 9, -9, -27},
-	{-27, -9, 99, -27},
-	{18, -27, -27, 121}
+  float M[2][2] = {
+	{5, 2},
+	{2, 1},
   };
   
 	if(world_rank == 0){
 		printf("Jestem procesorem: %d\n", world_rank);
-		for (int i = 0; i <= 3; i++){
-    			for (int j = 0; j <= 3; j++){
-				printf("%f ,", M[i][j]);
-			}
-			printf("\n");
-     		}     
+		float a=M[0][1]/2;
+		MPI_Send(&a, 1, MPI_FLOAT, 1, 0, MPI_COMM_WORLD);     
 	}
-	else {
+	else if (world_rank==1){
 		printf("Jestem procesorem: %d\n", world_rank);
-		M[0][0]=0;
+		MPI_Recv(&a, 2, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		M[0][1]=a;
 		for (int i = 0; i <= 3; i++){
 			for (int j = 0; j <= 3; j++){
 				printf("%f ,", M[i][j]);
