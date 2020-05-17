@@ -18,6 +18,12 @@ int main(int argc, char** argv) {
   
 	if(world_rank == 0){
 		printf("Jestem procesorem: %d\n", world_rank);
+		for (int i = 0; i <n; i++){
+			for (int j = 0; j <n; j++){
+				printf("%f ,", M[i][j]);
+			}
+			printf("\n");
+		}
 		a=M[0][1]/2;
 		MPI_Send(&a, 1, MPI_FLOAT, 1, 0, MPI_COMM_WORLD);     
 	}
