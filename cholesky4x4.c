@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+using namespace std;
 int main(int argc, char** argv) {
   // Initialize the MPI environment
   MPI_Init(NULL, NULL);
@@ -27,7 +28,7 @@ int main(int argc, char** argv) {
 		}
 		printf("\n");
 		a=sqrt(M[0][1]);
-		std::cout<<a<<std::endl;
+		cout<<a<<endl;
 		MPI_Send(&a, 1, MPI_FLOAT, 1, 0, MPI_COMM_WORLD);     
 	}
 	else if (world_rank==1){
