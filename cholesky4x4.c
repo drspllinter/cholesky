@@ -9,6 +9,7 @@ int main(int argc, char** argv) {
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  int n=2;
   float a=0;
   float M[2][2] = {
 	{5, 2},
@@ -24,8 +25,8 @@ int main(int argc, char** argv) {
 		printf("Jestem procesorem: %d\n", world_rank);
 		MPI_Recv(&a, 2, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		M[0][1]=a;
-		for (int i = 0; i <= 3; i++){
-			for (int j = 0; j <= 3; j++){
+		for (int i = 0; i <n; i++){
+			for (int j = 0; j <n; j++){
 				printf("%f ,", M[i][j]);
 			}
 			printf("\n");
