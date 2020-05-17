@@ -18,6 +18,7 @@ int main(int argc, char** argv) {
 };
   
   if(world_rank == 0){
+    printf("Jestem procesorem: %d\n", world_rank);
     for (int i = 0; i <= 3; i++){
 		  for (int j = 0; j <= 3; j++){
 			  printf("%f ,", M[i][j]);
@@ -27,6 +28,16 @@ int main(int argc, char** argv) {
   }
   else {
   	printf("Jestem procesorem: %d\n", world_rank);
+	 M[0][0]=0;
+	 for (int i = 0; i <= 3; i++){
+		  for (int j = 0; j <= 3; j++){
+			  printf("%f ,", M[i][j]);
+		  }
+		  printf("\n");
+	  } 
+	  
+	  
+	  
 	  /*MPI_Send(&token, 1, MPI_BYTE, world_rank + 1, 0, MPI_COMM_WORLD); 
    MPI_Send(&tokenn, 2, MPI_BYTE, world_rank - 1, 0, MPI_COMM_WORLD);  
    MPI_Recv(&token, 1, MPI_BYTE, world_rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
