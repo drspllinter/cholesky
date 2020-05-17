@@ -28,7 +28,10 @@ int main(int argc, char** argv) {
 		}
 		printf("\n");
 		a=sqrt(M[0][1]);
-		std::cout<<a;
+		printf("Tp jest a z f: %f", a);
+		printf("Tp jest a z g: %g\n", a);
+		printf("Tp jest a z e: %e\n", a);
+		printf("Tp jest a z lf: %lf\n", a);
 		MPI_Send(&a, 1, MPI_FLOAT, 1, 0, MPI_COMM_WORLD);     
 	}
 	else if (world_rank==1){
