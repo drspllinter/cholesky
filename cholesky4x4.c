@@ -1,7 +1,6 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
 #include <cmath>
 #include <math.h>
 using namespace std;
@@ -14,7 +13,7 @@ int main(int argc, char** argv) {
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   
-  double M[4][4] = {
+  float M[4][4] = {
 	{9, 0, -27, 18},
 	{0, 9, -9, -27},
 	{-27, -9, 99, -27},
@@ -24,13 +23,13 @@ int main(int argc, char** argv) {
   if(world_rank == 0){
     for (int i = 0; i <= 3; i++){
 		  for (int j = 0; j <= 3; j++){
-			  cout << M[i][j] << " ";
+			  printf("%f ,", M[i][j]);
 		  }
-		  cout << endl;
+		  printf("\n");
 	  }     
   }
   else {
-  	cout<<"Jestem innym procesorem";
+  	printf("Jestem procesorem: %d\n", world_rank);
 	  /*MPI_Send(&token, 1, MPI_BYTE, world_rank + 1, 0, MPI_COMM_WORLD); 
    MPI_Send(&tokenn, 2, MPI_BYTE, world_rank - 1, 0, MPI_COMM_WORLD);  
    MPI_Recv(&token, 1, MPI_BYTE, world_rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
