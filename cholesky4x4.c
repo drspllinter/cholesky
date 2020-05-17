@@ -32,11 +32,11 @@ int main(int argc, char** argv) {
 		printf("Tp jest a z g: %g\n", a);
 		printf("Tp jest a z e: %e\n", a);
 		printf("Tp jest a z lf: %lf\n", a);*/
-		MPI_Send(&a, 1, MPI_FLOAT, 1, 0, MPI_COMM_WORLD);     
+		MPI_Send(&a, 1, MPI_DOUBLE, 1, 0, MPI_COMM_WORLD);     
 	}
 	else if (world_rank==1){
 		printf("Jestem procesorem: %d\n", world_rank);
-		MPI_Recv(&a, 2, MPI_FLOAT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		MPI_Recv(&a, 2, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		M[0][1]=a;
 		for (int i = 0; i <n; i++){
 			for (int j = 0; j <n; j++){
