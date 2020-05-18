@@ -44,14 +44,16 @@ int main(int argc, char** argv) {
 			}
 			MPI_Recv(&M[p+k][k], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}	
-			
-		printf("Po dzialaniach: \n");
-		for (int i = 0; i <n; i++){
-			for (int j = 0; j <n; j++){
-				printf("%f ,", M[i][j]);
+		if (k==n-1)
+		{	
+			printf("Po dzialaniach: \n");
+			for (int i = 0; i <n; i++){
+				for (int j = 0; j <n; j++){
+					printf("%f ,", M[i][j]);
+				}
+				printf("\n");
 			}
-			printf("\n");
-		}    
+		}	
 	}
 	else if (world_rank<n){
 		//printf("Jestem procesorem: %d\n", world_rank);
