@@ -14,11 +14,11 @@ int main(int argc, char** argv) {
   int n=3;
   double a;
   double b;
-  
-  for (int k=0; k<n; k++)//k indeks kolumny (algorytm idzie po dolnej diagonali od L do P)
+  double M[3][3] = {{4, 12, -16}, {12, 37, -43}, {-16, -43, 98}};
+  for (int k=0; k<1; k++)//k indeks kolumny (algorytm idzie po dolnej diagonali od L do P)
   {		  
 	if(world_rank == 0){
-		double M[3][3] = {{4, 12, -16}, {12, 37, -43}, {-16, -43, 98}};
+		
 		/*printf("Jestem procesorem: %d\n", world_rank);
 		printf("Przed dzialaiami: \n");
 		for (int i = 0; i <n; i++){
@@ -59,6 +59,14 @@ int main(int argc, char** argv) {
 			for (int r=c; r<n; r++)
 			{
 				MPI_Recv(&M[r][c], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				printf("Jestem procesorem %d i moja macierz to:\n", world_rank);
+				for (int i = 0; i <n; i++)
+				{
+					for (int j = 0; j <n; j++){
+					printf("%f ,", M[i][j]);
+				}
+				printf("\n");
+				}
 			}
 		}		
 	}   
