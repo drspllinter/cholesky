@@ -11,10 +11,10 @@ int main(int argc, char** argv) {
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-  int n=3;
+  const int n=3;
   double a;
   double b;
-  double M[3][3] = {{4, 12, -16}, {12, 37, -43}, {-16, -43, 98}};
+  double M[n][n] = {{4, 12, -16}, {12, 37, -43}, {-16, -43, 98}};
   
 	if(world_rank == 0){
 		printf("Jestem procesorem: %d\n", world_rank);
@@ -32,6 +32,10 @@ int main(int argc, char** argv) {
 			MPI_Send(&a, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
 			MPI_Recv(&b, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			M[i][0]=b;
+		}
+		for (int i=1; i<n; i++)
+		{
+			M[1][1]-=(M[1][i]*M[1][i]);	
 		}	
 		
 		printf("Po dzialaniach: \n");
