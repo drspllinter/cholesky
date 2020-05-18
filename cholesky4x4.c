@@ -63,7 +63,11 @@ int main(int argc, char** argv) {
 			printf("Cholesky decomposition of matrix M: L= \n");
 			for (int i = 0; i <n; i++){
 				for (int j = 0; j <n; j++){
-					printf("%f ,", M[i][j]);
+					printf("%f", M[i][j]);
+					if(j!=n-1)
+					{
+						printf(", ");	
+					}
 				}
 				printf("\n");
 			}
