@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
 			}
 		}	
 	}
-	else if (world_rank<n){
+	else if (world_rank<n-k){
 		//printf("Jestem procesorem: %d\n", world_rank);
 		for (int c=0; c<=k; c++)//petla przyjmujaca potrzebne do obliczen wartosci
 		{
