@@ -14,43 +14,54 @@ int main(int argc, char** argv) {
   int n=3;
   double a;
   double b;
-  double M[3][3] = {{4, 12, -16}, {12, 37, -43}, {-16, -43, 98}};
   
+  for (int k=0; k<n; k++)//k indeks kolumny (algorytm idzie po dolnej diagonali od L do P)
+  {		  
 	if(world_rank == 0){
-		printf("Jestem procesorem: %d\n", world_rank);
+		double M[3][3] = {{4, 12, -16}, {12, 37, -43}, {-16, -43, 98}};
+		/*printf("Jestem procesorem: %d\n", world_rank);
 		printf("Przed dzialaiami: \n");
 		for (int i = 0; i <n; i++){
 			for (int j = 0; j <n; j++){
 				printf("%f ,", M[i][j]);
 			}
 			printf("\n");
-		}
+		}*/
 		
-		M[0][0]=sqrt(M[0][0]);
-		a=M[0][0];
-		for (int i=1; i<n; i++){
-			MPI_Send(&a, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
-			MPI_Recv(&b, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			M[i][0]=b;
-		}
-		for (int i=0; i<1; i++)
+		for (int j=0; j<k; j++) //j indeks pomocniczy-do sumowania wyrazow
 		{
-			M[1][1]-=(M[1][i]*M[1][i]);	
+			M[k][k]-=(M[k][j]*M[k][j]);	
+		}
+		M[k][k]=sqrt(M[k][k]);
+		for (int p=1; p<n-k; p++) //p indeks procesora do ktorego wysylamy 
+		{	
+			for (int c=0; c<=k; c++)//c indeks columny elementow do wysylki 
+			{
+				for (int r=c; r<n; r++)//r indeks wiersza elementu do wysylki
+				{	
+					MPI_Send(&M[r][c], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD);
+				}
+			}
 		}	
-		
-		printf("Po dzialaniach: \n");
+			
+		/*printf("Po dzialaniach: \n");
 		for (int i = 0; i <n; i++){
 			for (int j = 0; j <n; j++){
 				printf("%f ,", M[i][j]);
 			}
 			printf("\n");
-		}    
+		}*/    
 	}
 	else if (world_rank<n){
 		//printf("Jestem procesorem: %d\n", world_rank);
-		MPI_Recv(&a, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-		b=M[world_rank][0]/a;
-		MPI_Send(&b, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);	
-	}     
+		for (int c=0; c<=k; c++)
+		{
+			for (int r=c; r<n; r++)
+			{
+				MPI_Recv(&M[r][c], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			}
+		}		
+	}   
+  }	  
   MPI_Finalize();
 }  
