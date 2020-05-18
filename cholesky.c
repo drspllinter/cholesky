@@ -11,8 +11,8 @@ int main(int argc, char** argv) {
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-  int n=3;
-  double M[3][3] = {{3, 4, 3}, {4, 8, 6}, {3, 6, 9}}; //declaration of the matrix to be decomposed
+  int n=4;
+  double M[4][4] = {{505, 36, -166, 300}, {36, 171, -102, -33}, {-166, -102, 138, -72}, {300, -33, -72, 203}}; //declaration of the matrix to be decomposed
   for (int k=0; k<3; k++)//k-column index (algorithm goes below of diagonal from left to right)
   {		  
 	if(world_rank == 0){
