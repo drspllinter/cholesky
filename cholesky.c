@@ -2,7 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-//#include <iostream>
+/*This code is parallel implementation of Cholesky decomposition of a symmetric matrix. It works for any rank=n.
+Calcultions are done sequentionally column after column (only diagonal and below diagonal elements are calculated). Program is meant to 
+be compiled with MPICC: unix command "mpicc cholesky.c -o cholesky -std=c99 -lm" will produce file "cholesky" which is meant to be run with n or more
+processors.
+*/
 int main(int argc, char** argv) {
   // Initialize the MPI environment
   MPI_Init(NULL, NULL);
@@ -11,7 +15,8 @@ int main(int argc, char** argv) {
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-  int n=4;
+  //Given below matrix is a 4x4 example but program works for any rank symmetric matrix 
+  int n=4; //rank of the matrix
   double M[4][4] = {{81, 9, 36, 18}, {9, 5, 14, 8}, {36, 14, 50, 32}, {18, 8, 32, 71}}; //declaration of the matrix to be decomposed
   for (int k=0; k<n; k++)//k-column index (algorithm goes below of diagonal from left to right)
   {		  
