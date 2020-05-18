@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   int n=4;
-  double M[4][4] = {{9, 0, 0, 0}, {1, 2, 0, 0}, {4, 5, 3, 0}, {2, 3, 3, 7}}; //declaration of the matrix to be decomposed
+  double M[4][4] = {{81, 9, 36, 18}, {9, 5, 14, 8}, {36, 14, 50, 32}, {18, 8, 32, 71}}; //declaration of the matrix to be decomposed
   for (int k=0; k<n; k++)//k-column index (algorithm goes below of diagonal from left to right)
   {		  
 	if(world_rank == 0){
