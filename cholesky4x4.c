@@ -31,6 +31,7 @@ int main(int argc, char** argv) {
 		for (int i=1; i<n; i++){
 			MPI_Send(&a, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
 			MPI_Recv(&b, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			M[i][0]=b;
 		}	
 		
 		printf("Po dzialaniach: \n");
