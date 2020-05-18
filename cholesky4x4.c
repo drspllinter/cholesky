@@ -11,48 +11,45 @@ int main(int argc, char** argv) {
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-  int n=2;
-  double a=0;
-  double M[2][2] = {
-	{5, 2},
-	{2, 1},
-  };
+  int n=3;
+  double a;
+  double b;
+  double M[n][n] = {
+   {4, 12, -16},
+   {12, 37, -43},
+   {-16, -43, 98}
+   };
   
 	if(world_rank == 0){
 		printf("Jestem procesorem: %d\n", world_rank);
+		printf("Przed dzialaiami: \n");
 		for (int i = 0; i <n; i++){
 			for (int j = 0; j <n; j++){
 				printf("%f ,", M[i][j]);
 			}
 			printf("\n");
 		}
-		printf("\n");
-		a=sqrt(M[0][1]);
-		/*printf("Tp jest a z f: %f", a);
-		printf("Tp jest a z g: %g\n", a);
-		printf("Tp jest a z e: %e\n", a);
-		printf("Tp jest a z lf: %lf\n", a);*/
-		MPI_Send(&a, 1, MPI_DOUBLE, 1, 0, MPI_COMM_WORLD);     
-	}
-	else if (world_rank==1){
-		printf("Jestem procesorem: %d\n", world_rank);
-		MPI_Recv(&a, 2, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-		M[0][1]=a;
+		
+		M[0][0]=sqrt(M[0][0]);
+		a=M[0][0];
+		for (int i=1; i<n; i++){
+			MPI_Send(&a, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
+			MPI_Recv(&b, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		}	
+		
+		printf("Po dzialaniach: \n");
 		for (int i = 0; i <n; i++){
 			for (int j = 0; j <n; j++){
-				printf("%f", M[i][j]);
-				printf(", ");
+				printf("%f ,", M[i][j]);
 			}
 			printf("\n");
-		}	
+		}    
 	}
-	  
-	  
-	  /*MPI_Send(&token, 1, MPI_BYTE, world_rank + 1, 0, MPI_COMM_WORLD); 
-   MPI_Send(&tokenn, 2, MPI_BYTE, world_rank - 1, 0, MPI_COMM_WORLD);  
-   MPI_Recv(&token, 1, MPI_BYTE, world_rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-   printf("Process %d received token %c from process %d\n", world_rank, token, world_rank - 1);
-   MPI_Recv(&tokenn, 2, MPI_BYTE, world_rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-   printf("Process %d received token %c from process %d\n", world_rank, tokenn, world_rank + 1);  */     
+	else if (world_rank<n){
+		//printf("Jestem procesorem: %d\n", world_rank);
+		MPI_Recv(&a, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+		b=M[world_rank][0]/a;
+		MPI_Send(&b, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);	
+	}     
   MPI_Finalize();
 }  
