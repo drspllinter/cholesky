@@ -18,15 +18,20 @@ int main(int argc, char** argv) {
   for (int k=0; k<3; k++)//k indeks kolumny (algorytm idzie po dolnej diagonali od L do P)
   {		  
 	if(world_rank == 0){
-		
-		/*printf("Jestem procesorem: %d\n", world_rank);
-		printf("Przed dzialaiami: \n");
-		for (int i = 0; i <n; i++){
-			for (int j = 0; j <n; j++){
-				printf("%f ,", M[i][j]);
-			}
-			printf("\n");
-		}*/
+		if (k==0)
+		{	
+			printf("Matrix M=\n");
+			for (int i = 0; i <n; i++){
+				for (int j = 0; j <n; j++){
+					printf("%f", M[i][j]);
+					if(j!=n-1)
+					{
+						printf(", ");	
+					}	
+				}
+				printf("\n");
+			}			
+		}	
 		
 		for (int j=0; j<k; j++) //j indeks pomocniczy-do sumowania wyrazow
 		{
@@ -46,7 +51,16 @@ int main(int argc, char** argv) {
 		}	
 		if (k==n-1)
 		{	
-			printf("Po dzialaniach: \n");
+			for(int i=0; i<n-1; i++)
+			{
+				for(int j=i+1; j<n; j++)
+				{
+					M[i][j]=0;	
+				}	
+			}
+			
+			
+			printf("Cholesky decomposition of matrix M: L= \n");
 			for (int i = 0; i <n; i++){
 				for (int j = 0; j <n; j++){
 					printf("%f ,", M[i][j]);
