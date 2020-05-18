@@ -16,8 +16,8 @@ int main(int argc, char** argv) {
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   //Given below matrix is a 4x4 example but program works for any rank symmetric matrix 
-  int n=4; //rank of the matrix
-  double M[4][4] = {{81, 9, 36, 18}, {9, 5, 14, 8}, {36, 14, 50, 32}, {18, 8, 32, 71}}; //declaration of the matrix to be decomposed
+  int n=5; //rank of the matrix
+  double M[5][5] = {{81, 9, 36, 18, 9}, {9, 5, 14, 8, 5}, {36, 14, 50, 32, 23}, {18, 8, 32, 71, 45}, {9, 5, 23, 45, 55}}; //declaration of the matrix to be decomposed
   for (int k=0; k<n; k++)//k-column index (algorithm goes below of diagonal from left to right)
   {		  
 	if(world_rank == 0){
