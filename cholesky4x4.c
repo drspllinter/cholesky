@@ -59,9 +59,10 @@ int main(int argc, char** argv) {
 			for (int r=c; r<n; r++)
 			{
 				MPI_Recv(&M[r][c], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				printf("Jestem procesorem %d i otrzymalem element M[%d][%d]=%f", world_rank, r, c, M[r][c]);
 			}
 		}
-		printf("Jestem procesorem %d i moja macierz to:\n", world_rank);
+		/*printf("Jestem procesorem %d i moja macierz to:\n", world_rank);
 			for (int i = 0; i <n; i++)
 			{
 				for (int j = 0; j <n; j++)
@@ -69,7 +70,7 @@ int main(int argc, char** argv) {
 					printf("%f ,", M[i][j]);
 				}
 				printf("\n");
-			}
+			}*/
 	}   
   }	  
   MPI_Finalize();
