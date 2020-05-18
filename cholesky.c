@@ -12,12 +12,11 @@ int main(int argc, char** argv) {
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   int n=3;
-  double a;
-  double b;
-  double M[3][3] = {{4, 12, -16}, {12, 37, -43}, {-16, -43, 98}};
-  for (int k=0; k<3; k++)//k indeks kolumny (algorytm idzie po dolnej diagonali od L do P)
+  double M[3][3] = {{3, 4, 3}, {4, 8, 6}, {3, 6, 9}}; //declaration of the matrix to be decomposed
+  for (int k=0; k<3; k++)//k-column index (algorithm goes below of diagonal from left to right)
   {		  
 	if(world_rank == 0){
+		//printing to screen initial matrix M
 		if (k==0)
 		{	
 			printf("Matrix M=\n");
@@ -32,17 +31,18 @@ int main(int argc, char** argv) {
 				printf("\n");
 			}			
 		}	
-		
-		for (int j=0; j<k; j++) //j indeks pomocniczy-do sumowania wyrazow
+		//0 procesor calculates every diagonal element
+		for (int j=0; j<k; j++)
 		{
 			M[k][k]-=(M[k][j]*M[k][j]);	
 		}
 		M[k][k]=sqrt(M[k][k]);
-		for (int p=1; p<n-k; p++) //p indeks procesora do ktorego wysylamy 
+		
+		for (int p=1; p<n-k; p++) //p-processor index to which 0 processor sends a given task
 		{	
-			for (int c=0; c<=k; c++)//petla wysylajace potrzebne do obliczen wielkosci, c indeks columny elementow do wysylki 
+			for (int c=0; c<=k; c++)//processor 0 sends already calculated values
 			{
-				for (int r=c; r<n; r++)//r indeks wiersza elementu do wysylki
+				for (int r=c; r<n; r++)
 				{	
 					MPI_Send(&M[r][c], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD);
 				}
@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
 			MPI_Recv(&M[p+k][k], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}	
 		if (k==n-1)
-		{	
+		{	//put 0's above diagonal
 			for(int i=0; i<n-1; i++)
 			{
 				for(int j=i+1; j<n; j++)
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 				}	
 			}
 			
-			
+			//print result to the screen
 			printf("Cholesky decomposition of matrix M: L= \n");
 			for (int i = 0; i <n; i++){
 				for (int j = 0; j <n; j++){
@@ -74,32 +74,20 @@ int main(int argc, char** argv) {
 		}	
 	}
 	else if (world_rank<n-k){
-		//printf("Jestem procesorem: %d\n", world_rank);
-		for (int c=0; c<=k; c++)//petla przyjmujaca potrzebne do obliczen wartosci
+		for (int c=0; c<=k; c++)//receving already calculated values
 		{
 			for (int r=c; r<n; r++)
 			{
 				MPI_Recv(&M[r][c], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				//printf("Jestem procesorem %d z kolumny %d i otrzymalem element M[%d][%d]=%f\n", world_rank, k, r, c, M[r][c]);
 			}
 		}
 		
-		for (int g=0; g<k; g++)
+		for (int g=0; g<k; g++)//calculating non-diagonal elements concurrently
 		{
 			M[k+world_rank][k]-=M[k][g]*M[k+world_rank][g];		
 		}	
 		M[k+world_rank][k]/=M[k][k];
 		MPI_Send(&M[k+world_rank][k], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-		
-		/*printf("Jestem procesorem %d i moja macierz to:\n", world_rank);
-			for (int i = 0; i <n; i++)
-			{
-				for (int j = 0; j <n; j++)
-				{
-					printf("%f ,", M[i][j]);
-				}
-				printf("\n");
-			}*/
 	}   
   }	  
   MPI_Finalize();
