@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   int n=4;
   double M[4][4] = {{505, 36, -166, 300}, {36, 171, -102, -33}, {-166, -102, 138, -72}, {300, -33, -72, 203}}; //declaration of the matrix to be decomposed
-  for (int k=0; k<3; k++)//k-column index (algorithm goes below of diagonal from left to right)
+  for (int k=0; k<n; k++)//k-column index (algorithm goes below of diagonal from left to right)
   {		  
 	if(world_rank == 0){
 		//printing to screen initial matrix M
