@@ -19,16 +19,16 @@ int main(int argc, char** argv) {
   int n=5; //rank of the matrix
   int e=0;
   double M[5][5] = {{81, 9, 36, 18, 9}, {9, 5, 14, 8, 5}, {36, 14, 50, 32, 23}, {18, 8, 32, 71, 45}, {9, 5, 23, 45, 55}}; //declaration of the matrix to be decomposed
-  if (world_size>=n)
-  {
-  	e=n-k;	
-  }
-  else 
-  {
-  	e=world_size;	
-  }
   for (int k=0; k<n; k++)//k-column index (algorithm goes below of diagonal from left to right)
-  {		  
+  {		
+	if (world_size>=n)
+  	{
+		e=n-k;	
+  	}
+  	else 
+  	{
+		e=world_size;	
+  	}
 	if(world_rank == 0){
 		//printing to screen initial matrix M
 		if (k==0)
