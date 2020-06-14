@@ -60,13 +60,13 @@ int main(int argc, char** argv) {
 					for (int r=c; r<n; r++)
 					{	
 						MPI_Send(&M[r][c], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD);
-						printf("Process %d send M(%d, %d) to process %d\n", 0, r, c, p);
+						printf("%d: Process %d send M(%d, %d) to process %d\n", k, 0, r, c, p);
 					}
 				}
 				for (int l=0; l<n-k-p; l+=world_size-1)
 				{
 					MPI_Recv(&M[k+p+l][k], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-					printf("Process %d recived M(%d, %d) from process %d\n", 0, k+p+l, k, p);
+					printf("%d: Process %d recived M(%d, %d) from process %d\n", k, 0, k+p+l, k, p);
 				}
 			
 			}
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
 				for (int r=c; r<n; r++)
 				{
 					MPI_Recv(&M[r][c], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-					printf("Process %d recived M(%d, %d) from process %d\n", world_rank, r, c, 0);
+					printf("%d: Process %d recived M(%d, %d) from process %d\n", k, world_rank, r, c, 0);
 				}
 			}
 			for (int l=0; l<n-k-world_rank; l+=world_size-1)
@@ -114,7 +114,7 @@ int main(int argc, char** argv) {
 				}	
 				M[k+world_rank+l][k]/=M[k][k];
 				MPI_Send(&M[k+world_rank+l][k], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-				printf("Process %d send M(%d, %d) to process %d\n", world_rank, k+world_rank+l, k, 0);
+				printf("%d: Process %d send M(%d, %d) to process %d\n", k, world_rank, k+world_rank+l, k, 0);
 			}
 		}
 	}   
