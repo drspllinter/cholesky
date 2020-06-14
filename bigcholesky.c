@@ -18,17 +18,17 @@ int main(int argc, char** argv) {
   //Given below matrix is a 4x4 example but program works for any rank symmetric matrix 
   int n=5; //rank of the matrix
   int e=0;
+  if (world_size>=n)
+  {
+	e=n;	
+  }
+  else 
+  {
+	e=world_size;	
+  }
   double M[5][5] = {{81, 9, 36, 18, 9}, {9, 5, 14, 8, 5}, {36, 14, 50, 32, 23}, {18, 8, 32, 71, 45}, {9, 5, 23, 45, 55}}; //declaration of the matrix to be decomposed
   for (int k=0; k<n; k++)//k-column index (algorithm goes below of diagonal from left to right)
   {		
-	if (world_size>=n)
-  	{
-		e=n-k;	
-  	}
-  	else 
-  	{
-		e=world_size;	
-  	}
 	if(world_rank == 0){
 		//printing to screen initial matrix M
 		if (k==0)
@@ -54,22 +54,18 @@ int main(int argc, char** argv) {
 		int z=1;
 		for (int p=1; p<e; p++) //p-processor index to which 0 processor sends a given task
 		{	
-			for (int c=0; c<=k; c++)//processor 0 sends already calculated values
+			for (int c=0; c<n; c++)//processor 0 sends matrix
 			{
 				for (int r=c; r<n; r++)
 				{	
 					MPI_Send(&M[r][c], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD);
 				}
 			}
-			MPI_Recv(&M[p+k][k], 1, MPI_DOUBLE, z, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-			if (p%(world_size-1)==0)
+			for (int l=0; l<n-k-p; l+=world_size-1)
 			{
-				z=1;	
+				MPI_Recv(&M[k+p+l][k], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			}
-			else 
-			{
-				z++;	
-			}
+			
 		}	
 		if (k==n-1)
 		{	//put 0's above diagonal
@@ -96,14 +92,14 @@ int main(int argc, char** argv) {
 		}	
 	}
 	else if (world_rank<e){
-		for (int c=0; c<=k; c++)//receving already calculated values
+		for (int c=0; c<n; c++)//receving already calculated values
 		{
 			for (int r=c; r<n; r++)
 			{
 				MPI_Recv(&M[r][c], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 			}
 		}
-		for (int l=0; l<=n-k-world_rank; l+=world_size-1)
+		for (int l=0; l<n-k-world_rank; l+=world_size-1)
 		{
 			for (int g=0; g<k; g++)//calculating non-diagonal elements concurrently
 			{
