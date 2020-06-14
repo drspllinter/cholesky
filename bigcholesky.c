@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 			}
 			for (int l=0; l<n-k-p; l+=world_size-1)
 			{
-				MPI_Recv(&M[k+p+l][k], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				MPI_Recv(&M[k+p+l][k], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 				printf("Process %d recived M(%d, %d) from process %d\n", 0, k+p+l, k, p);
 			}
 			
