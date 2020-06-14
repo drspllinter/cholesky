@@ -51,25 +51,27 @@ int main(int argc, char** argv) {
 			M[k][k]-=(M[k][j]*M[k][j]);	
 		}
 		M[k][k]=sqrt(M[k][k]);
-		int z=1;
-		for (int p=1; p<e; p++) //p-processor index to which 0 processor sends a given task
-		{	
-			for (int c=0; c<n; c++)//processor 0 sends matrix
-			{
-				for (int r=c; r<n; r++)
-				{	
-					MPI_Send(&M[r][c], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD);
-					printf("Process %d send M(%d, %d) to process %d\n", 0, r, c, p);
+		if (k<n-1)
+		{
+			for (int p=1; p<e; p++) //p-processor index to which 0 processor sends a given task
+			{	
+				for (int c=0; c<n; c++)//processor 0 sends matrix
+				{
+					for (int r=c; r<n; r++)
+					{	
+						MPI_Send(&M[r][c], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD);
+						printf("Process %d send M(%d, %d) to process %d\n", 0, r, c, p);
+					}
 				}
-			}
-			for (int l=0; l<n-k-p; l+=world_size-1)
-			{
-				MPI_Recv(&M[k+p+l][k], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				printf("Process %d recived M(%d, %d) from process %d\n", 0, k+p+l, k, p);
-			}
+				for (int l=0; l<n-k-p; l+=world_size-1)
+				{
+					MPI_Recv(&M[k+p+l][k], 1, MPI_DOUBLE, p, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+					printf("Process %d recived M(%d, %d) from process %d\n", 0, k+p+l, k, p);
+				}
 			
-		}	
-		if (k==n-1)
+			}
+		}
+		else if (k==n-1)
 		{	//put 0's above diagonal
 			for(int i=0; i<n-1; i++)
 			{
@@ -94,23 +96,26 @@ int main(int argc, char** argv) {
 		}	
 	}
 	else if (world_rank<e){
-		for (int c=0; c<n; c++)//receving already calculated values
+		if (k<n-1)
 		{
-			for (int r=c; r<n; r++)
+			for (int c=0; c<n; c++)//receving already calculated values
 			{
-				MPI_Recv(&M[r][c], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-				printf("Process %d recived M(%d, %d) from process %d\n", world_rank, r, c, 0);
+				for (int r=c; r<n; r++)
+				{
+					MPI_Recv(&M[r][c], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+					printf("Process %d recived M(%d, %d) from process %d\n", world_rank, r, c, 0);
+				}
 			}
-		}
-		for (int l=0; l<n-k-world_rank; l+=world_size-1)
-		{
-			for (int g=0; g<k; g++)//calculating non-diagonal elements concurrently
+			for (int l=0; l<n-k-world_rank; l+=world_size-1)
 			{
-				M[k+world_rank+l][k]-=M[k][g]*M[k+world_rank+l][g];		
-			}	
-			M[k+world_rank+l][k]/=M[k][k];
-			MPI_Send(&M[k+world_rank+l][k], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
-			printf("Process %d send M(%d, %d) to process %d\n", world_rank, k+world_rank+l, k, 0);
+				for (int g=0; g<k; g++)//calculating non-diagonal elements concurrently
+				{
+					M[k+world_rank+l][k]-=M[k][g]*M[k+world_rank+l][g];		
+				}	
+				M[k+world_rank+l][k]/=M[k][k];
+				MPI_Send(&M[k+world_rank+l][k], 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+				printf("Process %d send M(%d, %d) to process %d\n", world_rank, k+world_rank+l, k, 0);
+			}
 		}
 	}   
   }	  
