@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
 				for (int j = 0; j <n; j++){
 					if (M[i][j]!=0)
 					{
-						printf("%d, %d, %f\n", i, j M[i][j]);	
+						printf("%d, %d, %f\n", i, j, M[i][j]);	
 					}
 				}
 			}
