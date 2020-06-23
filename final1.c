@@ -17,7 +17,8 @@ int main(int argc, char** argv) {
   int world_size;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size); 
   int e=0;
-  FILE* file = fopen ("bcsstk01.mtx", "r");
+  FILE *file = fopen ("bcsstk01.mtx", "r");
+  FILE *fp = fopen("cd.mtx", "w");
   int i = 0;
   int j=0;
   float f=0;
@@ -28,9 +29,9 @@ int main(int argc, char** argv) {
   fscanf (file, "%d", &numcol);
   fscanf (file, "%d", &nonzero);
   float M[n][numcol];
-  for (int k=0; k<48; k++)
+  for (int k=0; k<n; k++)
   {
-    for (int w=0; w<48; w++)
+    for (int w=0; w<n; w++)
     {
       M[k][w]=0; 
     }
@@ -112,12 +113,22 @@ int main(int argc, char** argv) {
 			
 			//print result to the screen
 			printf("Cholesky decomposition of matrix M: L= \n");
+			int a=0;
 			for (int i = 0; i <n; i++){
 				for (int j = 0; j <n; j++){
 					if (M[i][j]!=0)
 					{
-						printf("%d, %d, %f\n", i, j, M[i][j]);	
+						a++;	
 					}
+				}
+			}
+			fprintf(fp, "%d, %d, %f\n", n, n, a);
+			for (int i=0; i<n; i++)
+			{
+				for (int j=0; j<i; j++)
+				{
+					if (M[i][j]!=0)
+					  fprintf(fp, "%d, %d, %f\n", i, j, M[i][j]);
 				}
 			}
 		}	
@@ -147,5 +158,6 @@ int main(int argc, char** argv) {
 	}   
   }
   fclose (file);
+  fclose (fp);
   MPI_Finalize();
 }  
