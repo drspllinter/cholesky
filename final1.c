@@ -56,25 +56,9 @@ int main(int argc, char** argv) {
   {
 	e=world_size;	
   }
-  //double M[5][5] = {{81, 9, 36, 18, 9}, {9, 5, 14, 8, 5}, {36, 14, 50, 32, 23}, {18, 8, 32, 71, 45}, {9, 5, 23, 45, 55}}; //declaration of the matrix to be decomposed
   for (int k=0; k<n; k++)//k-column index (algorithm goes below of diagonal from left to right)
   {		
-	if(world_rank == 0){
-		//printing to screen initial matrix M
-		if (k==0)
-		{	
-			/*printf("Matrix M=\n");
-			for (int i = 0; i <n; i++){
-				for (int j = 0; j <n; j++){
-					printf("%f", M[i][j]);
-					if(j!=n-1)
-					{
-						printf(", ");	
-					}	
-				}
-				printf("\n");
-			}*/			
-		}	
+	if(world_rank == 0){	
 		//0 procesor calculates every diagonal element
 		for (int j=0; j<k; j++)
 		{
@@ -111,8 +95,7 @@ int main(int argc, char** argv) {
 				}	
 			}
 			
-			//print result to the screen
-			printf("Cholesky decomposition of matrix M: L= \n");
+			//save choesky decomposition to fie "cd.mxt"
 			int a=0;
 			for (int i = 0; i <n; i++){
 				for (int j = 0; j <n; j++){
@@ -122,7 +105,7 @@ int main(int argc, char** argv) {
 					}
 				}
 			}
-			fprintf(fp, "%d, %d, %f\n", n, n, a);
+			fprintf(fp, "%d, %d, %d\n", n, n, a);
 			for (int i=0; i<n; i++)
 			{
 				for (int j=0; j<i; j++)
