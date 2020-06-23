@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#define TRUE 1
 /*This code is parallel implementation of Cholesky decomposition of a symmetric matrix. It works for any rank=n.
 Calcultions are done sequentionally column after column (only diagonal and below diagonal elements are calculated). Program is meant to 
 be compiled with MPICC: unix command "mpicc cholesky.c -o cholesky -std=c99 -lm" will produce file "cholesky" which is meant to be run with n or more
@@ -14,10 +15,38 @@ int main(int argc, char** argv) {
   int world_rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
   int world_size;
-  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-  //Given below matrix is a 4x4 example but program works for any rank symmetric matrix 
-  int n=5; //rank of the matrix
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size); 
   int e=0;
+  FILE* file = fopen ("bcsstk01.mtx", "r");
+  int i = 0;
+  int j=0;
+  float f=0;
+  int n=0;
+  int numcol=0;
+  int nonzero=0;
+  fscanf (file, "%d", &n);
+  fscanf (file, "%d", &numcol);
+  fscanf (file, "%d", &nonzero);
+  float M[n][numcol];
+  for (int k=0; k<48; k++)
+  {
+    for (int w=0; w<48; w++)
+    {
+      M[k][w]=0; 
+    }
+  }
+  
+  while (TRUE)
+  {  
+      fscanf (file, "%d", &i);
+      if(feof(file)!=0)
+        break;
+      fscanf (file, "%d", &j);
+      fscanf (file, "%f", &f);
+      M[i-1][j-1]=f;
+     //printf ("M[ %d , %d ] = %f\n", i-1, j-1, M[i-1][j-1]);
+  }	
+	
   if (world_size>=n)
   {
 	e=n;	
@@ -26,7 +55,7 @@ int main(int argc, char** argv) {
   {
 	e=world_size;	
   }
-  double M[5][5] = {{81, 9, 36, 18, 9}, {9, 5, 14, 8, 5}, {36, 14, 50, 32, 23}, {18, 8, 32, 71, 45}, {9, 5, 23, 45, 55}}; //declaration of the matrix to be decomposed
+  //double M[5][5] = {{81, 9, 36, 18, 9}, {9, 5, 14, 8, 5}, {36, 14, 50, 32, 23}, {18, 8, 32, 71, 45}, {9, 5, 23, 45, 55}}; //declaration of the matrix to be decomposed
   for (int k=0; k<n; k++)//k-column index (algorithm goes below of diagonal from left to right)
   {		
 	if(world_rank == 0){
@@ -85,13 +114,11 @@ int main(int argc, char** argv) {
 			printf("Cholesky decomposition of matrix M: L= \n");
 			for (int i = 0; i <n; i++){
 				for (int j = 0; j <n; j++){
-					printf("%f", M[i][j]);
-					if(j!=n-1)
+					if (M[i][j]!=0)
 					{
-						printf(", ");	
+						printf("%d, %d, %f\n", i, j M[i][j]);	
 					}
 				}
-				printf("\n");
 			}
 		}	
 	}
@@ -118,6 +145,7 @@ int main(int argc, char** argv) {
 			}
 		}
 	}   
-  }	  
+  }
+  fclose (file);
   MPI_Finalize();
 }  
